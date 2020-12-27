@@ -21,6 +21,7 @@ class BookController extends Controller
     {
         // DBよりURIパラメータと同じIDを持つBookの情報を取得
         $book = Book::findOrFail($id);
+
         // 取得した値をビュー「book/edit」に渡す
         return view('book/edit', compact('book'));
     }
