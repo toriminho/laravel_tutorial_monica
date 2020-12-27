@@ -24,9 +24,48 @@ class BookController extends Controller
         return view('book/edit', compact('book'));
     }
 
+    // 以下の編集画面の登録ボタンのコールバック
+    // http://localhost:8000/book/1/edit
+    // $requestは、リクエスト関連のデータが入っている
+    // $idは、アドレスに指定された書籍のID
     public function update(Request $request, $id)
     {
+        // Bookテーブルから該当IDの要素を取得する
         $book = Book::findOrFail($id);
+        // 編集画面からPUTで送られた書籍名、価格、著者をBookテーブルに格納する
+        $book->name = $request->name;
+        $book->price = $request->price;
+        $book->author = $request->author;
+        $book->save();
+
+        return redirect("/book");
+    }
+
+    public function destroy($id)
+    {
+        $book = Book::findOrFail($id);
+        $book->delete();
+
+        return redirect("/book");
+    }
+
+    // トップページの「新規作成」ボタンのコールバック
+    // viewのcreate.blade.phpでページを生成
+    // create.blade.phpの「登録」ボタンを押下すると
+    // store()が呼ばれる
+    public function create()
+    {
+        // 空の$bookを渡す
+        $book = new Book();
+        return view('book/create', compact('book'));
+    }
+
+    // create.blade.phpの「登録」ボタンのコールバック
+    // ページは生成せず、DB操作だけを行う
+    // トップページへ遷移する
+    public function store(Request $request)
+    {
+        $book = new Book();
         $book->name = $request->name;
         $book->price = $request->price;
         $book->author = $request->author;
