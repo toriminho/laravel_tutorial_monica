@@ -56,7 +56,11 @@
 <div id="drop-area"></div>
 
 <!-- ファイル選択ボタン -->
-<input type="file" id="file-selector" multiple>
+<form method="POST" action="/book/upload" enctype="multipart/form-data">
+    @csrf
+    <input type="file" name="imagefile" id="file-selector" multiple>
+    <button type="submit">アップロード</button>
+</form>
 
 <img id="image-area">
 
@@ -88,10 +92,14 @@ dropArea.addEventListener('dragover', (event) => {
 
 // ドロップ
 dropArea.addEventListener('drop', (event) => {
-  event.stopPropagation();
-  event.preventDefault();
-  const fileList = event.dataTransfer.files;
-  getMetadataForFileList(fileList);
+    event.stopPropagation();
+    event.preventDefault();
+    const fileList = event.dataTransfer.files;
+    getMetadataForFileList(fileList);
+
+    for (const file of fileList) {
+        readImage(file);
+    }
 });
 
 // ファイルの内容を表示する
@@ -104,11 +112,10 @@ function getMetadataForFileList(fileList) {
         // Unknown cross-browser support.
         const size = file.size ? file.size : 'NOT SUPPORTED';
         console.log({file, name, type, size});
-
-        readImage(file);
     }
 }
 
+// 読み込んだ画像を表示
 function readImage(file) {
     // Check if the file is an image.
     if (file.type && file.type.indexOf('image') === -1) {

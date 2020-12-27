@@ -36,3 +36,4 @@ Route::resource('book', BookController::class);
 //Route::get('book/{id}', 'BookController@show');
 
 
+Route::post('book/upload', [BookController::class, 'upload']);

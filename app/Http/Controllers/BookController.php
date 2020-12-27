@@ -75,4 +75,14 @@ class BookController extends Controller
 
         return redirect("/book");
     }
+
+    public function upload(Request $request)
+    {
+//        dd($request->file('imagefile'));
+
+        if($request->file('imagefile')->isValid()){
+            $path = $request->file('imagefile')->store('');
+        }
+        return redirect('/book');
+    }
 }
