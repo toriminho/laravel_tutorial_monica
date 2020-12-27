@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Http\Requests\BookRequest;
 
 class BookController extends Controller
 {
@@ -28,7 +29,7 @@ class BookController extends Controller
     // http://localhost:8000/book/1/edit
     // $requestは、リクエスト関連のデータが入っている
     // $idは、アドレスに指定された書籍のID
-    public function update(Request $request, $id)
+    public function update(BookRequest $request, $id)
     {
         // Bookテーブルから該当IDの要素を取得する
         $book = Book::findOrFail($id);
@@ -63,7 +64,7 @@ class BookController extends Controller
     // create.blade.phpの「登録」ボタンのコールバック
     // ページは生成せず、DB操作だけを行う
     // トップページへ遷移する
-    public function store(Request $request)
+    public function store(BookRequest $request)
     {
         $book = new Book();
         $book->name = $request->name;

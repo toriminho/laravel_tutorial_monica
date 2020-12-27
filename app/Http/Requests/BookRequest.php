@@ -23,8 +23,12 @@ class BookRequest extends FormRequest
      */
     public function rules()
     {
+        // バリデーションのルールを
+        // 連想配列で表現する
         return [
-            //
+            'name' => 'required|string|max:50',
+            'price' => 'required|integer',
+            'author' => 'nullable|string|max:50',
         ];
     }
 }
