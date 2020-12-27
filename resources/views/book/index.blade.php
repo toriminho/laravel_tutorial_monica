@@ -44,17 +44,138 @@
 </div>
 
 
-<!-- experience -->
-<div>
-    <div id="drop_zone">Drop a file here</div>
-    <div>
-    <output id="list"></output>
-    <form id="my_form" enctype=multipart/form-data>
-        <input type="file" style="display:inline" name="upload_file">
-        <br>
-        <button type="button" onclick="file_upload()">アップロード</button>
-    </form>
-    </div>
-</div>
+
+
+<!--
+=============================================================
+ experience
+=============================================================
+-->
+
+<!-- ファイル入力エリア -->
+<div id="drop-area"></div>
+
+<!-- ファイル選択ボタン -->
+<input type="file" id="file-selector" multiple>
+
+<img id="image-area">
+
+<script>
+// ファイル選択のイベントハンドラ
+// ファイル選択でchangeイベントが発生する
+const fileSelector = document.getElementById('file-selector');
+
+fileSelector.addEventListener('change', (event) => {
+    const fileList = event.target.files;
+    console.log(fileList);
+
+    for (const file of fileList) {
+        readImage(file);
+    }
+});
+
+
+// ファイル入力エリアのイベントハンドラ
+const dropArea = document.getElementById('drop-area');
+
+// ドラッグ
+dropArea.addEventListener('dragover', (event) => {
+  event.stopPropagation();
+  event.preventDefault();
+  // Style the drag-and-drop as a "copy file" operation.
+  event.dataTransfer.dropEffect = 'copy';
+});
+
+// ドロップ
+dropArea.addEventListener('drop', (event) => {
+  event.stopPropagation();
+  event.preventDefault();
+  const fileList = event.dataTransfer.files;
+  getMetadataForFileList(fileList);
+});
+
+// ファイルの内容を表示する
+function getMetadataForFileList(fileList) {
+    for (const file of fileList) {
+        // Not supported in Safari for iOS.
+        const name = file.name ? file.name : 'NOT SUPPORTED';
+        // Not supported in Firefox for Android or Opera for Android.
+        const type = file.type ? file.type : 'NOT SUPPORTED';
+        // Unknown cross-browser support.
+        const size = file.size ? file.size : 'NOT SUPPORTED';
+        console.log({file, name, type, size});
+
+        readImage(file);
+    }
+}
+
+function readImage(file) {
+    // Check if the file is an image.
+    if (file.type && file.type.indexOf('image') === -1) {
+        console.log('File is not an image.', file.type, file);
+        return;
+    }
+
+    const img = document.getElementById('image-area');
+
+    const reader = new FileReader();
+    reader.addEventListener('load', (event) => {
+        img.src = event.target.result;
+    });
+    reader.readAsDataURL(file);
+}
+
+// ファイルの読み込み状況を表示する
+function readFile(file) {
+    const reader = new FileReader();
+    reader.addEventListener('load', (event) => {
+        const result = event.target.result;
+        // Do something with result
+    });
+
+    reader.addEventListener('progress', (event) => {
+        if (event.loaded && event.total) {
+            const percent = (event.loaded / event.total) * 100;
+            console.log(`Progress: ${Math.round(percent)}`);
+        }
+    });
+    reader.readAsDataURL(file);
+}
+
+
+
+function file_upload()
+{
+    // フォームデータを取得
+    let formdata = () => new FormData($('#my_form').get(0));
+    // ファイルが未登録なら一番最初のファイルを追加
+    // 複数ファイルアップロードの場合ここを修正
+    if($('input[name="upload_file"]').val() == ""){
+      formdata.append('upload_file',files[0])
+    }
+
+    //非同期通信
+    $.ajax({
+        url  : "/upload",
+        type : "POST",
+        data : formdata,
+        cache       : false,
+        contentType : false,
+        processData : false,
+        dataType: 'html',
+
+    })
+    .done(function(data, textStatus, jqXHR){
+        console.log(data);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("fail");
+    })
+    .always(function(data){
+        console.log("complete")
+    });
+}
+
+</script>
 
 @endsection
