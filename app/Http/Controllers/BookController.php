@@ -5,16 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Image;
 use App\Http\Requests\BookRequest;
 
 class BookController extends Controller
 {
     public function index()
     {
-        // DBよりBookテーブルの値を全て取得
+        // DBよりテーブルの値を全て取得
         $books = Book::all();
+        $images = Image::all();
+
         // 取得した値をビューに渡す
-        return view('book/index', compact('books'));
+        return view('book/index', compact('books', 'images'));
     }
 
     public function edit($id)
@@ -85,8 +88,12 @@ class BookController extends Controller
         if($request->file('imagefile')->isValid()){
             // ファイルをローカルストレージに保存する
             $path = $request->file('imagefile')->store('public');
+            $path = substr($path, 7);
+
             // ファイルのパスをDBに保存する
-            
+            $image = new Image();
+            $image->file_path = $path;
+            $image->save();
         }
 
         // ページは遷移せずトップページのまま

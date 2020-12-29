@@ -68,6 +68,14 @@
     </div>
 
     <img id="image-area">
+
+    @foreach($images as $image)
+        <tr>
+            <td>
+                <img src="{{asset('storage/' . $image->file_path)}}" width="200">
+            </td>
+        </tr>
+    @endforeach
 </div>
 
 <script>
