@@ -68,7 +68,8 @@
     </div>
 
     <img id="image-area">
-
+</div>
+<div id="gallery">
     @foreach($images as $image)
         <tr>
             <td>
@@ -77,6 +78,7 @@
         </tr>
     @endforeach
 </div>
+
 
 <script>
 // ファイル選択ボタンのイベントハンドラ
@@ -122,22 +124,54 @@ dropArea.addEventListener('drop', (event) => {
     let formData = new FormData();
     formData.append("imagefile", file);
 
+    // fetchで非同期にサーバにデータを送る
+    fetch('/book/upload',
+    {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    })
+    .then((res) => {
+        if (!res.ok) {
+            throw new Error(`${res.status} ${res.statusText}`);
+        }
+        return res.blob();
+    })
+    .then((blob) => {
+      // blob にレスポンスデータが入る
+    })
+    .catch((reason) => {
+        console.log(reason);
+    });
+
+// ajaxをfetchに変更したためコメントアウト
+/*
+    // ajax通信（非同期）
     let request = new XMLHttpRequest();
 
-    request.onreadystatechange = function() {
-        if (request.readyState == 4) { // 通信の完了時
-            if (request.status == 200) { // 通信の成功時
-                console.log("ajax success");                
-            }
-        }else{
+    // サーバから返信を受ける関数
+    request.onreadystatechange = function()
+    {
+        if (request.readyState == 4   // 通信の完了
+         && request.status == 200) {  // 通信の成功
+            console.log("ajax success");
+        }else if(! request.status == 200){
             console.log("ajax fail");
         }
     }
+
     request.open("POST", "/book/upload");
     request.setRequestHeader('X-CSRF-TOKEN','{{ csrf_token() }}');
     request.send(formData);
+    // クライアントの処理が終わらないと
+    // サーバから返信があってもコールバック（onreadystatechange）が
+    // 動かないことを調べるための無限ループ
+    // while(1){}
+*/
 });
-
 
 
 // ファイルの内容を表示する

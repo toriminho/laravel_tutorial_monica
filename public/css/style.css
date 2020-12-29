@@ -14,7 +14,8 @@ main {
     margin-top: 25px;
 }
 footer {
-    margin-top: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     text-align: center;
 }
 
@@ -56,7 +57,9 @@ footer {
     text-align: center;
 }
 
-footer {
-    margin-top: 30px;
-    margin-bottom: 30px;
+#gallery {
+    padding: 10px;
+    border: 10px solid gray;
+    border-radius: 10px;
+    background-color: white;
 }
