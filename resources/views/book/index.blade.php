@@ -53,20 +53,26 @@
 -->
 
 <!-- ファイル入力エリア -->
-<div id="drop-area"></div>
+<div id="upload">
+    <div id="drop-area">
+        <div id="name">drag & drop</div>
+    </div>
 
-<!-- ファイル選択ボタン -->
-<form method="POST" action="/book/upload" enctype="multipart/form-data">
-    @csrf
-    <input type="file" name="imagefile" id="file-selector" multiple>
-    <button type="submit">アップロード</button>
-</form>
+    <!-- ファイル選択ボタン -->
+    <div class="form-upload">
+        <form method="POST" action="/book/upload" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="imagefile" id="file-selector" multiple>
+            <input type="submit" value="アップロード"></inpub>
+        </form>
+    </div>
 
-<img id="image-area">
+    <img id="image-area">
+</div>
 
 <script>
-// ファイル選択のイベントハンドラ
-// ファイル選択でchangeイベントが発生する
+// ファイル選択ボタンのイベントハンドラ
+// （ファイルを選択するとchangeイベントが発生する）
 const fileSelector = document.getElementById('file-selector');
 
 fileSelector.addEventListener('change', (event) => {
@@ -94,13 +100,37 @@ dropArea.addEventListener('dragover', (event) => {
 dropArea.addEventListener('drop', (event) => {
     event.stopPropagation();
     event.preventDefault();
+
     const fileList = event.dataTransfer.files;
     getMetadataForFileList(fileList);
 
     for (const file of fileList) {
+        // 画像を表示
         readImage(file);
     }
+
+    const file = fileList[0];
+    // データを送る
+    let formData = new FormData();
+    formData.append("imagefile", file);
+
+    let request = new XMLHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4) { // 通信の完了時
+            if (request.status == 200) { // 通信の成功時
+                console.log("ajax success");                
+            }
+        }else{
+            console.log("ajax fail");
+        }
+    }
+    request.open("POST", "/book/upload");
+    request.setRequestHeader('X-CSRF-TOKEN','{{ csrf_token() }}');
+    request.send(formData);
 });
+
+
 
 // ファイルの内容を表示する
 function getMetadataForFileList(fileList) {
@@ -150,7 +180,9 @@ function readFile(file) {
 }
 
 
+fileSelector.files;
 
+/*
 function file_upload()
 {
     // フォームデータを取得
@@ -182,6 +214,7 @@ function file_upload()
         console.log("complete")
     });
 }
+*/
 
 </script>
 

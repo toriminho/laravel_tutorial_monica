@@ -76,13 +76,20 @@ class BookController extends Controller
         return redirect("/book");
     }
 
+    // アップロードボタン
     public function upload(Request $request)
     {
-//        dd($request->file('imagefile'));
+        // デバッグ（ファイル情報を見る）
+        // dd($request->file('imagefile'));
 
         if($request->file('imagefile')->isValid()){
-            $path = $request->file('imagefile')->store('');
+            // ファイルをローカルストレージに保存する
+            $path = $request->file('imagefile')->store('public');
+            // ファイルのパスをDBに保存する
+            
         }
+
+        // ページは遷移せずトップページのまま
         return redirect('/book');
     }
 }

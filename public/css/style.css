@@ -1,3 +1,7 @@
+* {
+    box-sizing: content-box;
+}
+
 body {
     background-color: beige;
     margin-left: 30px;
@@ -14,12 +18,40 @@ footer {
     text-align: center;
 }
 
+#upload {
+    margin-top: 20px;
+}
+
+#upload * {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #drop-area{
     width: 400px;
     height: 200px;
-    margin-top: 20px;
-    border: 2px dotted gray;
-    border-radius: 1px;
-    background-color: aquamarine;
+    border: 6px solid gray;
+    border-radius: 12px;
+    background-color: white;
     background-blend-mode: screen;
+}
+
+#drop-area #name {
+    width: 400px;
+    height: 200px;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    color: #ccc;
+    font-size: 36px;
+}
+
+.form-upload {
+    margin-top: 10px;
+    text-align: center;
+}
+
+footer {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
